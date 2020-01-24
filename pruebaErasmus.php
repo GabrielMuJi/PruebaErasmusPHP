@@ -10,18 +10,49 @@ session_start();
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Prueba Erasmus PHP</title>
     <script src="jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <style>
+
+    body {
+        background-color:lightblue;
+    }
+
+    h1 {
+        padding:10px;
+    }
+
+    p {
+        font-size:1rem;
+    }
     
     #formularioInscripcion {
-
+        padding:10px;
+        background-color:lightblue;
+        font-size:1rem;
         display:none;
-
     }
 
     #listaCitas {
-        
+        padding:10px;
+        background-color:lightblue;
+        font-size:1rem;
         display:none;
+    }
 
+    #tablaCitas {
+        padding:10px;
+        border: solid black;
+    }
+
+    #tablaCitas td {
+        border: solid black;
+    }
+
+    #botones {
+        padding:10px;
+        font-size:1rem;
     }
     
     </style>
@@ -29,17 +60,19 @@ session_start();
 <body>
 
     <h1>Clínica Trescasas<h1>
-    <div id="formularioInscripcion">
-        Nombre: <input type="text" id="nombre">
-        Apellido: <input type="text" id="apellido">
-        País: <input type="text" id="pais">
-        Día: <input type="date" id="fecha">
-        <button id="enviar">Nueva Cita</button>
-
+    <div id="formularioInscripcion" class="card">
+        <div class="cardbody">
+            <input type="text" id="nombre" placeholder="Nombre"></br>
+            <input type="text" id="apellido" placeholder="Apellido"></br>
+            <input type="text" id="pais" placeholder="Pais"></br>
+            <input type="date" id="fecha"></br>
+            <button id="enviar">Nueva Cita</button>
+        </div>
     </div>
+
     <div id="listaCitas">
 
-        <h2>Lista de citas para este mes</h2>
+        <h2>Lista de citas para este mes.</h2>
         <table id="tablaCitas">
             <tr>
                 <th>Nombre completo</th>
@@ -49,8 +82,11 @@ session_start();
 
     </div>
 
-    <button id="nueva">Nueva Cita</button>
-    <button id="lista">Obtener Citas</button>
+    <div id="botones">
+    <p>Para crear una nueva cita, pulse 'Creación Citas', para obtener las citas del mes, pulse 'Obtener Citas'.</p>
+        <button id="nueva">Creación Citas</button>
+        <button id="lista">Obtener Citas</button>
+    </div>
 
     <script>
 

@@ -94,15 +94,14 @@ class Calendario {
 
     // Métodos para crear y obtener lista de citas.
     public function crearCita($fecha, Cliente $cliente) {
-        //Obtengo el nombre del cliente, y se lo paso al constructor de Cita
+        $clienteExistente = false;
+        //Obtengo el nombre del cliente para pasarlo luego al constructor de Citas.
         $nombreCliente = $cliente->getNombre()." ".$cliente->getApellido();
-        //Compruebo si el cliente ya está registrado
+        //Compruebo si el cliente ya está registrado.
         foreach ($_SESSION['listaClientes'] as $persona) {
             if($cliente->getNombre()==$persona->getNombre() && $cliente->getApellido()==$persona->getApellido() && $cliente->getPais()==$persona->getPais()) {
                 $clienteExistente = true;
-            } else {
-                $clienteExistente = false;
-            }
+            } 
         }
         //Si el cliente existe, procedo normalmente.
         if ($clienteExistente) {
@@ -116,9 +115,8 @@ class Calendario {
             $cita = new Cita($nombreCliente, $fecha);
             //Añado la cita a mi array de citas.
             $_SESSION["listaCitas"][] = $cita;
-        
         }
-        
+        echo "La cita ha sido registrada.";
     }
 
     public function obtenerCitas() {
@@ -133,7 +131,6 @@ class Calendario {
                 $this->citasSemana[] = $cita;  
             }
         }
-        $_SESSION["listaCitasSemana"] = "";
         $_SESSION["listaCitasSemana"] = $this->citasSemana;
         return json_encode($_SESSION["listaCitasSemana"]);
     }
@@ -145,6 +142,7 @@ if (!empty($_POST['nombre'])) {
     $cliente = new Cliente($_POST['nombre'],$_POST['apellido'],$_POST['pais']);
     $calendario->crearCita($_POST['fecha'],$cliente);
 }
-echo $calendario->obtenerCitas();
-
+else {
+    echo $calendario->obtenerCitas();
+}
 ?>
