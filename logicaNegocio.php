@@ -101,7 +101,6 @@ class Calendario {
         if (date_format($fechaFormateada, "Y")!=$anioActual) {
             throw new Exception('Sólo puedes crear citas para el año actual.');
         } else {
-            $clienteExistente = false;
             //Obtengo el nombre del cliente para pasarlo luego al constructor de Citas.
             $nombreCliente = $cliente->getNombre()." ".$cliente->getApellido();
             //Compruebo si el cliente ya está registrado.
@@ -115,13 +114,16 @@ class Calendario {
                 $cita = new Cita($nombreCliente, $fecha);
                 //Añado la cita a mi array de citas.
                 $_SESSION["listaCitas"][] = $cita;
+                guardarCita($cita,"citas.txt");
             }
             //Si el cliente no existe, primero lo registro.
             else {
                 $_SESSION['listaClientes'][] = new Cliente($cliente->getNombre(),$cliente->getApellido(),$cliente->getPais());
+                guardarCliente(new Cliente($cliente->getNombre(),$cliente->getApellido(),$cliente->getPais()),"clientes.txt");
                 $cita = new Cita($nombreCliente, $fecha);
                 //Añado la cita a mi array de citas.
                 $_SESSION["listaCitas"][] = $cita;
+                guardarCita($cita,"citas.txt");
             }
             echo "La cita ha sido registrada.";
         }
@@ -144,6 +146,26 @@ class Calendario {
         return json_encode($_SESSION["listaCitasSemana"]);
     }
 
+}
+
+function guardarCita(Cita $cita, $fichero) {
+    #Abrimos el fichero en modo de escritura 
+    $stream = fopen($fichero,"a"); 
+    #Escribimos la primera línea dentro de él 
+    $string = $cita->getCliente()."-".$cita->getFecha()."\r\n";
+    fputs($stream,$string); 
+    #Cerramos el fichero 
+    fclose($stream); 
+}
+
+function guardarCliente(Cliente $cliente, $fichero) {
+    #Abrimos el fichero en modo de escritura 
+    $stream = fopen($fichero,"a"); 
+    #Escribimos la primera línea dentro de él 
+    $string = $cliente->getNombre()."-".$cliente->getApellido()."-".$cliente->getPais()."\r\n";
+    fputs($stream,$string); 
+    #Cerramos el fichero 
+    fclose($stream); 
 }
 
 //Creo un objeto de la clase Calendario
