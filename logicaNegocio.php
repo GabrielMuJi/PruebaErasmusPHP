@@ -149,7 +149,7 @@ class Calendario {
 }
 
 function guardarCita(Cita $cita, $fichero) {
-    #Abrimos el fichero en modo de escritura 
+    #Abrimos el fichero en modo de append 
     $stream = fopen($fichero,"a"); 
     #Escribimos la primera línea dentro de él 
     $string = $cita->getCliente()."-".$cita->getFecha()."\r\n";
@@ -159,7 +159,7 @@ function guardarCita(Cita $cita, $fichero) {
 }
 
 function guardarCliente(Cliente $cliente, $fichero) {
-    #Abrimos el fichero en modo de escritura 
+    #Abrimos el fichero en modo de append 
     $stream = fopen($fichero,"a"); 
     #Escribimos la primera línea dentro de él 
     $string = $cliente->getNombre()."-".$cliente->getApellido()."-".$cliente->getPais()."\r\n";
