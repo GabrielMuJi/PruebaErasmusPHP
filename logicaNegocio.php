@@ -94,29 +94,37 @@ class Calendario {
 
     // Métodos para crear y obtener lista de citas.
     public function crearCita($fecha, Cliente $cliente) {
-        $clienteExistente = false;
-        //Obtengo el nombre del cliente para pasarlo luego al constructor de Citas.
-        $nombreCliente = $cliente->getNombre()." ".$cliente->getApellido();
-        //Compruebo si el cliente ya está registrado.
-        foreach ($_SESSION['listaClientes'] as $persona) {
-            if($cliente->getNombre()==$persona->getNombre() && $cliente->getApellido()==$persona->getApellido() && $cliente->getPais()==$persona->getPais()) {
-                $clienteExistente = true;
-            } 
+        //Obtengo el año actual
+        $anioActual = date("Y");
+        $fechaFormateada = date_create_from_format('j-m-Y', $fecha);
+        //Si no coinciden el año actual con el introducido, lanzo la excepción.
+        if (date_format($fechaFormateada, "Y")!=$anioActual) {
+            throw new Exception('Sólo puedes crear citas para el año actual.');
+        } else {
+            $clienteExistente = false;
+            //Obtengo el nombre del cliente para pasarlo luego al constructor de Citas.
+            $nombreCliente = $cliente->getNombre()." ".$cliente->getApellido();
+            //Compruebo si el cliente ya está registrado.
+            foreach ($_SESSION['listaClientes'] as $persona) {
+                if($cliente->getNombre()==$persona->getNombre() && $cliente->getApellido()==$persona->getApellido() && $cliente->getPais()==$persona->getPais()) {
+                    $clienteExistente = true;
+                } 
+            }
+            //Si el cliente existe, procedo normalmente.
+            if ($clienteExistente) {
+                $cita = new Cita($nombreCliente, $fecha);
+                //Añado la cita a mi array de citas.
+                $_SESSION["listaCitas"][] = $cita;
+            }
+            //Si el cliente no existe, primero lo registro.
+            else {
+                $_SESSION['listaClientes'][] = new Cliente($cliente->getNombre(),$cliente->getApellido(),$cliente->getPais());
+                $cita = new Cita($nombreCliente, $fecha);
+                //Añado la cita a mi array de citas.
+                $_SESSION["listaCitas"][] = $cita;
+            }
+            echo "La cita ha sido registrada.";
         }
-        //Si el cliente existe, procedo normalmente.
-        if ($clienteExistente) {
-            $cita = new Cita($nombreCliente, $fecha);
-            //Añado la cita a mi array de citas.
-            $_SESSION["listaCitas"][] = $cita;
-        }
-        //Si el cliente no existe, primero lo registro.
-        else {
-            $_SESSION['listaClientes'][] = new Cliente($cliente->getNombre(),$cliente->getApellido(),$cliente->getPais());
-            $cita = new Cita($nombreCliente, $fecha);
-            //Añado la cita a mi array de citas.
-            $_SESSION["listaCitas"][] = $cita;
-        }
-        echo "La cita ha sido registrada.";
     }
 
     public function obtenerCitas() {
@@ -131,17 +139,24 @@ class Calendario {
                 $this->citasSemana[] = $cita;  
             }
         }
+        //Procedo a devolver toda la información en forma de JSON.
         $_SESSION["listaCitasSemana"] = $this->citasSemana;
         return json_encode($_SESSION["listaCitasSemana"]);
     }
 
 }
 
+//Creo un objeto de la clase Calendario
 $calendario = new Calendario();
+//Compruebo si el usuario está intentando crear una cita.
 if (!empty($_POST['nombre'])) {
     $cliente = new Cliente($_POST['nombre'],$_POST['apellido'],$_POST['pais']);
-    $calendario->crearCita($_POST['fecha'],$cliente);
-}
+    try {
+        $calendario->crearCita($_POST['fecha'],$cliente);
+    } catch (Exception $e) {
+        echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+    }
+} //Si no, es que el cliente está intentando ver las citas.
 else {
     echo $calendario->obtenerCitas();
 }
