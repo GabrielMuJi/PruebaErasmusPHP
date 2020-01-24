@@ -5,7 +5,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 $_SESSION["listaCitas"];
 $_SESSION["listaCitasSemana"];
-$_SESSION["listaClientes"] = array();
+$_SESSION["listaClientes"];
 
 // Clase Cliente
 class Cliente {
@@ -81,10 +81,6 @@ class Cita {
 
 // Clase Calendario
 class Calendario {
-
-    //Declaración de las propiedades
-    public $listaCitas;
-    public $citasSemana;
 
     // Constructor
     public function __construct(){
